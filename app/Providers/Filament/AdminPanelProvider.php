@@ -17,6 +17,8 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
+use Hasnayeen\Themes\Http\Middleware\SetTheme;
+use Hasnayeen\Themes\ThemesPlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -39,7 +41,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->font('Poppins', provider: GoogleFontProvider::class)
             ->sidebarCollapsibleOnDesktop(true)
-            ->brandName('JBS Resto')
+            // ->brandName('JBS Resto')
+            ->brandLogo(asset('images/logo.png'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -74,9 +77,11 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                SetTheme::class
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
+                ThemesPlugin::make()
             ])
             ->authMiddleware([
                 Authenticate::class,
