@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,7 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class UserResource extends Resource
+class UserResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = User::class;
 
@@ -32,11 +33,12 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('password')
                     ->password()
-                    ->required()
-                    ->maxLength(255),
+                    ->revealable()
+                    ->required(fn($livewire) => $livewire instanceof \App\Filament\Resources\UserResource\Pages\CreateUser)
+                    ->dehydrateStateUsing(fn($state) => $state ? bcrypt($state) : null) // Hash password if provided
+                    ->nullable(fn($livewire) => $livewire instanceof \App\Filament\Resources\UserResource\Pages\EditUser),
                 Forms\Components\Select::make('roles')
                     ->relationship('roles', 'name')
-                    ->multiple()
                     ->preload()
                     ->searchable(),
             ]);
@@ -95,5 +97,17 @@ class UserResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         return User::count();
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+        ];
     }
 }
