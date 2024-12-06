@@ -33,7 +33,9 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Joaopaulolndev\FilamentGeneralSettings\FilamentGeneralSettingsPlugin;
 use Joaopaulolndev\FilamentGeneralSettings\Pages\GeneralSettingsPage;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Role;
+use Z3d0X\FilamentLogger\Resources\ActivityResource;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -52,6 +54,9 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
+            ->resources([
+                config('filament-logger.activity_resource')
+            ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
                     ->items([
@@ -68,7 +73,11 @@ class AdminPanelProvider extends PanelProvider
                                 NavigationItem::make('Users')
                                     ->url(fn(): string => UserResource::getUrl())
                                     ->isActiveWhen(fn(): bool => request()->routeIs('filament.admin.resources.users.*'))
-                                    ->visible(fn(): bool => auth()->user()->can('view', User::class))
+                                    ->visible(fn(): bool => auth()->user()->can('view', User::class)),
+                                NavigationItem::make('Activity')
+                                    ->url(fn(): string => ActivityResource::getUrl())
+                                    ->isActiveWhen(fn(): bool => request()->routeIs('filament.admin.resources.activity-logs.*'))
+                                    ->visible(fn(): bool => auth()->user()->can('view', Activity::class))
                             ]),
                         NavigationGroup::make('Settings')
                             ->icon('heroicon-o-cog-6-tooth')

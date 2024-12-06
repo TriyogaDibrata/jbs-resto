@@ -5,11 +5,13 @@ namespace App\Providers;
 // use Illuminate\Support\Facades\Gate;
 
 use App\Models\User;
+use App\Policies\ActivityPolicy;
 use App\Policies\MenuPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\UserPolicy;
 use Datlechin\FilamentMenuBuilder\Models\Menu;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Role;
 
 class AuthServiceProvider extends ServiceProvider
@@ -22,7 +24,8 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         Role::class => RolePolicy::class,
         User::class => UserPolicy::class,
-        Menu::class => MenuPolicy::class
+        Menu::class => MenuPolicy::class,
+        Activity::class => ActivityPolicy::class
     ];
 
     /**
