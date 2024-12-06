@@ -4,7 +4,11 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 
+use App\Models\User;
+use App\Policies\MenuPolicy;
 use App\Policies\RolePolicy;
+use App\Policies\UserPolicy;
+use Datlechin\FilamentMenuBuilder\Models\Menu;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Spatie\Permission\Models\Role;
 
@@ -16,7 +20,9 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        Role::class => RolePolicy::class
+        Role::class => RolePolicy::class,
+        User::class => UserPolicy::class,
+        Menu::class => MenuPolicy::class
     ];
 
     /**
