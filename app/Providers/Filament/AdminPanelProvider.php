@@ -31,6 +31,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Joaopaulolndev\FilamentGeneralSettings\FilamentGeneralSettingsPlugin;
+use Joaopaulolndev\FilamentGeneralSettings\Pages\GeneralSettingsPage;
 use Spatie\Permission\Models\Role;
 
 class AdminPanelProvider extends PanelProvider
@@ -42,9 +44,6 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->colors([
-                'primary' => Color::Amber,
-            ])
             ->font('Poppins', provider: GoogleFontProvider::class)
             ->sidebarCollapsibleOnDesktop(true)
             ->brandLogo(asset('images/logo.png'))
@@ -78,6 +77,10 @@ class AdminPanelProvider extends PanelProvider
                                     ->url(fn(): string => MenuResource::getUrl())
                                     ->isActiveWhen(fn(): bool => request()->routeIs('filament.admin.resources.menus.*'))
                                     ->visible(fn(): bool => auth()->user()->can('view', Menu::class)),
+                                NavigationItem::make('General')
+                                    ->url(fn(): string => GeneralSettingsPage::getUrl())
+                                    ->isActiveWhen(fn(): bool => request()->routeIs('filament.admin.pages.general-settings-page'))
+                                    ->visible(fn(): bool => auth()->user()?->hasRole('admin'))
                             ]),
                     ]);
             })
@@ -101,7 +104,8 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 FilamentShieldPlugin::make(),
                 ThemesPlugin::make(),
-                FilamentMenuBuilderPlugin::make()
+                FilamentMenuBuilderPlugin::make(),
+                FilamentGeneralSettingsPlugin::make()
             ])
             ->authMiddleware([
                 Authenticate::class,
