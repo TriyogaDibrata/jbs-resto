@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\auth\Register;
 use App\Filament\Resources\UserResource;
 use App\Models\User;
 use Filament\Http\Middleware\Authenticate;
@@ -45,6 +46,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->registration(Register::class)
+            ->passwordReset()
             ->font('Poppins', provider: GoogleFontProvider::class)
             ->sidebarCollapsibleOnDesktop(true)
             ->brandLogo(asset('images/logo.png'))
